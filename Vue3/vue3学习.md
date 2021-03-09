@@ -294,6 +294,8 @@ vue.use(myPlugin, {name: 2})
 
 列表过渡使用的是`transition-group`组件, 新增了一个`v-move`样式控制元素改动后其他元素的变化
 
+其实`transition-group`内部使用一个 FLIP简单动画队列,使我们列表的一切变化都会有动画, 有一个前提条件`内部元素不能是 display: inline`
+
 #### 5. 还有两个不常用但是能处理特殊的动画
 
 **JS实现动画**

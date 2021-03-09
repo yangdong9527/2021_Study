@@ -333,5 +333,283 @@ vue.use(myPlugin, {name: 2})
 + 通过全局混入添加一些组件选项
 + ...
 
+## Vue3 新增Composition API
+
+Composition API 产生的原因,是为了更好的开发和维护代码
+
+### 1. Setup 函数的使用
+
+```javascript
+const app = Vue.createApp({
+    template: `
+		<div @click="handleClick">{{name}}</div>
+	`,
+    setup(props, context) { // setup函数是在 created 实例被完全初始化之前
+        return {
+            name: 'ydd',
+            handleClick: () => {
+                alert(123)
+            }
+        }
+    }
+})
+```
+
+setup函数返回一个对象, 这个对象中的内容可以在外部调用, setup函数中不允许使用this
+
+### 2. ref 和 reactive 响应式的引用
+
+首先通过`setup()`定义的数据并不是响应式的数据,为此Vue3, 提供了 `ref` 和 `reactive` 来转化,通过`proxy`来转换成一个响应式的引用,其中两者之间的使用场景是有区别的
+
+> 插播一条, ref 和 reactive 是将某些值转换然后得到一个响应式的引用, 所以我们return的时候是return这些转换后得到的引用而不是将这些值转换出去
+
+**ref 用来处理基础类型的数据**
+
+```html
+<script>
+	const app = Vue.createApp({
+        template: `
+			<div>{{name}}</div>
+		`,
+        setup(props, context) {
+            const { ref } = Vue;
+            let name = ref('dell');
+     		setTimeout(() => {
+                name.value = 'ydd'; // 需要注意的是 proxy 接受的是一个对象, 所以vue自动帮你转为了proxy({value: dell}) 的响应式引用
+            },200)
+            return {name}
+        }
+    })
+</script>
+```
+
+基础类型的数据转化为响应式类型的数据使用`ref`转换, 但是由于 `proxy`接收的是 对象, 于是基础类型的数据被封装了一层`{value: 基础类型值}`, 然后在模板中Vue又十分人性化的可以直接使用
+
+**reactive用来处理非基础类型的数据**
+
+```html
+<script>
+	const app = Vue.createApp({
+        template: `
+			<div>{{nameObj.name}}</div>
+		`,
+        setup(props, context) {
+            const { reactive } = Vue;
+            let nameObj = reactive({name: 'yd'});
+     		setTimeout(() => {
+                nameObj.name = 'ydd';
+            },200)
+            return {nameObj}
+        }
+    })
+</script>
+```
+
+`reactive`是用来转换非基础类型的数据,从而获取到响应式的引用
+
+**readonly只读的引用**
+
+除了上面两个Vue3还提供了一个只读属性,无法进行修改
+
+**toRefs用来解构reactive对象**
+
+`原理`: `toRefs()` 会将 reactive转化后的对象引用 `proxy({name: 'ydd'})` 转换成 `{name: proxy({value: ydd})}`, 就是将 reactive转换后的引用中的每一项都转换成了`ref`类型
+
+```html
+<script>
+	const app = Vue.createApp({
+        template: `
+			<div>{{name}}</div>
+		`,
+        setup(props, context) {
+            const { reactive } = Vue;
+            let nameObj = reactive({name: 'yd'});
+     		let {name} = toRefs(nameObj);
+            return {name}
+        }
+    })
+</script>
+```
+
+### 3. toRef 以及 context 参数
+
+##### 3.1 toRef基础
+
+`toRefs`在解构获取`reactive`对象中某个值的时候,如果一开始这个值不存在,会直接给一个undefined,而不会返会一个默认的响应式的引用, 而 通过`toRef`去获取`reactive`的引用中某个不存在的值的时候,还是会返回一个默认的响应式引用
+
+```html
+<script>
+	const app = Vue.createApp({
+        template: `
+			<div>{{age}}</div>
+		`,
+        setup(props, context) {
+            const { reactive } = Vue;
+            let nameObj = reactive({name: 'yd'});
+     		let age = toRef(nameObj, 'age');
+            return {age}
+        }
+    })
+</script>
+```
+
+`但是`不建议这样做, 你可以直接在`reactive`对象中加上这个参数 默认给个空就好了
+
+##### 3.2 context 参数中的值
+
+首先在`setup`函数中接受的`context`对象中有三个参数
+
++ `attrs`接收所有的None-props属性,就是组件外部属性没有被props接受的参数
++ `emit`就是以前的触发自定义事件的参数
++ `slots`对象返回的是一个各个插槽的内容
+
+```html
+<script>
+const app = Vue.createApp({
+    template: `<child>params</child>`
+})
+app.component('child', {
+    setup(props, context) {
+        const h = Vue;
+        const {attrs, slots, emit} = context
+        //return () => h('div', {}, slots.default());
+        function handleClick() {emit('change')}
+        return {
+            handleClick
+        }
+    }
+})
+</script>
+```
+
+### 4. 使用Composition API 来实现TodoList的案例
+
+`老实完成实例练习`
+
+### 5. computed方法生成计算属性
+
+ Vue3 提供了一个 `computed`的方法, 使用上其实和以前类型, 复杂写法可以设置`get() 和 set()`
+
+```html
+<script>
+	const app = Vue.createApp({
+        template: `
+			<div>{{countAddFive}}</div>
+		`,
+        setup(props, context) {
+            const { ref, computed } = Vue;
+            const count = ref(0)
+            const countAddFive = computed(() => {
+                return count.value + 5
+            })
+            return {count, countAddFive}
+        }
+    })
+</script>
+```
+
+
+
+### 6. watch 和 watchEffect 的使用
+
+#### 6.1 watch 在setup函数中的使用
+
+```html
+<script>
+	const app = Vue.createApp({
+        setup(props, context) {
+            const { ref, reactive, watch } = Vue;
+            // 监听一个基础类型的数据时
+            //let name = ref('yd')
+            //watch(name, (currName, prveName) => {
+            //    console.log(currName, prveName)
+            //})
+            //return {name}
+            
+            //监听非基础类型的数据时
+            //let nameObj = reactive({name: 'yd'})
+     		//watch(() => nameObj.name, (currName, prveName) => {
+            //    console.log(currName, prveName)
+            //})
+            //let {name} = toRefs(nameObj)
+            //return {name}
+     		
+            //监听多个属性变化
+            let tempObj = reactive({name: 'yd', age: '1'})
+            watch([() => tempObj.name, () => tempObj.age], ([currName, currAge], [prveName,prveAge]) => {
+                console.log(currName)
+            })
+            return {tempObj}
+        }
+    })
+</script>
+```
+
+主要常用的方式有,监听基础类型数据,监听非基础类型的数据,以及监听多个属性的变化, `注意watch监听是惰性的, 一开始并不会执行`
+
+#### 6.2 watchEffect 的使用
+
+```html
+<script>
+	const app = Vue.createApp({
+        setup(props, context) {
+            const { ref, watchEffect } = Vue;
+            let name = ref('yd')
+            const stop = watchEffect(() => {
+                console.log(name.value)
+            })
+            return {name}
+        }
+    })
+</script>
+```
+
+#### 两者的区别
+
++ watch 是惰性的, 不会立即执行代码, 而watchEffect则是会立即执行一次代码
++ watch需要指定监听对象, 当监听对象发生改变的时候,会执行代码, 而watchEffect不需要指定监听对象,而是代码内部依赖参数发生改变时,就会自动执行代码,不需要特意指定监听
++ watch可以拿到之前的数据, 而 watchEffect 不能拿到之前的那个值
+
+### 7. 生命周期函数的写法
+
+在setup中调用生命周期函数, 需要注意的是 setup 函数的调用是位于 `beforeCrate 和 created 之间的`
+
+```javascript
+// beforeMount => onBeforeMount
+// mounted => onMounted
+// beforeUpdate => onBeforeUpdate
+// beforeUnmount => onBeforeUnmount
+// unmouted => onUnmouted
+// onRederTraked // 每次渲染后重新收集响应式依赖
+// onRenderTriggered // 每次触发页面重新渲染时自动执行
+```
+
+### 8. provide, inject 模板, Ref 的用法
+
+```html
+<script>
+	const app = Vue.createApp({
+        setup(props, context) {
+            const {provide, ref, readonly} = Vue;
+            let name = ref('yd')
+            provide('name', readonly(name))
+            return {name}
+        }
+    })
+    app.component('child', {
+        setup() {
+            const {inject} = Vue
+            let name = inject('name', 'defaultVal')
+            return {name}
+        }
+    })
+    
+</script>
+```
+
+需要说明的一点就是 `provide`的参数不能够在子组件中修改 要满足 单一数据流规则, 可以使用`readonly`解决
+
+
+
 
 

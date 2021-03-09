@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <style>
+    /* 单元素 单组件 学习 */
+    /* 使用过渡实现 Vue 动画 */
+    /* .v-enter-from,
+    .v-leave-to {
+      transform: translateX(50px);
+    }
+    .v-enter-to,
+    .v-leave-from {
+      transform: translateX(0);
+    }
+    .v-enter-active,
+    .v-leave-active {
+      transition: transform 3s;
+    } */
+    /* 使用动画实现Vue */
+    @keyframes move {
+      from {
+        transform: translateX(50px);
+      }
+      to {
+        transform: translateX(0px);
+      }
+    }
+    .v-enter-active {
+      animation: move 3s;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <transition>
+      <div v-if="show">123</div>
+    </transition>
+    <button @click="handleClick">按钮</button>
+  </div>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          show: false
+        }
+      },
+      methods: {
+        handleClick() {
+          this.show = !this.show
+        }
+      }
+    })
+
+    app.mount('#app')
+  </script>
+</body>
+</html>

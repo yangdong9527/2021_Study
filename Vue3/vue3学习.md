@@ -685,6 +685,64 @@ Vue3提供了一个`computed 函数`, 只是用函数的方式,功能上和以�
 
 
 
+## Vue开发配套工具开发
+
+### 1. VueCLI的使用
+
+#### 基础环境
+
+```javascript
+// 安装 nrm , 修改npm 下载地址
+npm install nrm -g
+
+nrm ls
+
+nrm use taobao
+```
+
+#### 安装VueCLI工具
+
++ 先卸载老版本的脚手架工具
+
+  `npm uninstall vue-cli -g`
+
++ 安装最新的
+
+  `npm install -g @vue/cli`
+
+### 2. Vue-Router 使用
+
+`内容略过`
+
+### 3. VueX的使用
+
+`内容略过`
+
+### 4. CompositionAPI中使用Vuex
+
+```vue
+<script>
+    import {toRefs} from 'vue'
+	import {useStore} from 'vuex'
+    export default {
+        name: 'Home',
+        setup() {
+            const store = useStore()
+            const {name} = toRefs(store.state)
+            return {name}
+        }
+    }
+</script>
+```
+
+
+
+## 项目实战开始
+
+
+
+### 首页开发
+
 
 
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="app">
+  </div>
+
+  <script>
+    const listReactiveEffect = (inputValue) => {
+      let {reactive} = Vue;
+      let list = reactive([])
+      const handlePostInputValue = (item) => {
+        if(item) list.push(item);
+        inputValue.value = ''
+      }
+      return {list, handlePostInputValue}
+    }
+    const inputValueRefEffect = () => {
+      let {ref} = Vue;
+      let inputValue = ref('')
+      const handleInputValueChange = (e) => {
+        inputValue.value = e.target.value
+      }
+      return {inputValue, handleInputValueChange}
+    }
+    const app = Vue.createApp({
+      template: `
+        <div>
+          <input v-model="inputValue" type="text" @input="handleInputValueChange">
+          <button @click="() => handlePostInputValue(inputValue)">添加</button>
+          <div>{{inputValue}}</div>
+          <ul>
+            <li v-for="item in list">{{item}}</li>
+          </ul>
+        </div>
+      `,
+      setup(props, context) {
+        let {inputValue, handleInputValueChange} = inputValueRefEffect()
+        let {list, handlePostInputValue} = listReactiveEffect(inputValue)
+        return {
+          inputValue,
+          list,
+          handlePostInputValue,
+          handleInputValueChange
+        }
+      }
+    })
+
+    app.mount('#app')
+  </script>
+</body>
+</html>

@@ -609,6 +609,82 @@ app.component('child', {
 
 需要说明的一点就是 `provide`的参数不能够在子组件中修改 要满足 单一数据流规则, 可以使用`readonly`解决
 
+## CompositionAPI 章总结
+
+Vue3之前代码写到后期会十分的混乱,数据与逻辑交叉在一起,不方便后期代码的维护,提供了CompositionAPI来更好的封装维护代码
+
+### 1. setup函数
+
+setup函数自调用在beforeCreate和created生命周期函数之间,注意setup直接返回的数据是不具备响应式的, steup接受两个参数 props 和 context,
+
+`特别说明一点: setup中不能使用this`
+
+### 2. ref函数和reactive函数获取响应式的引用
+
+Vue3,提供了两个函数方法`ref`和`reactive`用来转化数据得到数据的响应式应用, 这里需要注意的是,`ref`是用来处理基础类型的数据,而`reactive`是用来处理非基础类型的数据的
+
+**两者处理数据的原理是:**
+
+`ref`:  ref('yd')  =>   proxy({value: 'yd'})  `reactive`: reactive({name: 'yd'})   =>  proxy({name: 'yd'})
+
+需要说明的是因为proxy代理的是对象,所以基础类型的数据都被Vue转换成了{vlaue: ''}的格式
+
+### 3. toRefs 和 toRef 两个函数的区别
+
+两者都是作用在`reactive`转换得到的响应式引用,其中`toRefs`是用来结构响应式引用的, 而`toRef`则是用来获取引用中指定的值
+
+```javascript
+const app = Vue.createApp({
+    setup() {
+        let {reactive, toRefs, toRef} = Vue;
+        let nameObj = reactive({name: 'age'})
+        let {name} = toRefs(nameObj)
+        let name1 = toRef(nameObj, 'name')
+        return {name, name1}
+    }
+})
+```
+
+**两者唯一的区别是**: `toRefs`如果结构一个不存在的值, 得不到一个不存在的响应式引用, 而 `toRef`则可以生成一个有默认值的响应式引用
+
+### 4. context 中的参数
+
+setup接受的第二个参数`context`接受一个对象,对象内有三个参数:
+
++ attrs: 组件外部没有被props记录的属性
++ slots: 插槽
++ emit:触发自定义事件
+
+### 5. computed函数
+
+Vue3提供了一个`computed 函数`, 只是用函数的方式,功能上和以前的其实差不多
+
+### 6. watch 和 watchEffect 的使用
+
+`watch`的基础操作有
+
++ 监听一个基础类型的数据
++ 监听一个非基础类型的数据
++ 同时监听多个数据
+
+`watchEffect`的使用和watch不用,它不需要特意指定监听参数, 而是关系内部依赖的响应数据
+
+**两者的区别**
+
++ `watch`是惰性的, 一开始不会执行内部代码,而`watchEffect`则会自动先执行一次代码
++ `watch`需要指定监听参数,而`watchEffect`不需要,自动监听内部依赖的响应式引用
++ `watch`中可以获取上一次参数,而`watchEffect`只能获取当前参数
+
+### 7. setup中使用生命周期函数
+
+相比较之前, 新增了两个生命周期函数
+
+### 8. provide, inject 的使用
+
+需要注意的是`provide,inject`的使用过程需要满足单向数据流规则, 所以我们最好使用`readonly`来传递响应式引用数据
+
+
+
 
 
 

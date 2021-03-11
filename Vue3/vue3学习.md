@@ -743,6 +743,21 @@ nrm use taobao
 
 ### 首页开发
 
+#### 1. 初始化样式
+
+```js
+// 安装
+npm install normalize.css --save
+// 引入
+import 'normalize.css'
+```
+
+#### 2. 布局过程
+
+**网络图片加载慢导致布局抖动**
+
+
+
 
 
 

@@ -1,0 +1,10 @@
+@import './variable.scss';
+html {
+  font-size: 100px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: .12rem;
+  color: $content-color2;
+}

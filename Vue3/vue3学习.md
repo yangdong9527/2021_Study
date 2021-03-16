@@ -712,7 +712,9 @@ nrm use taobao
 
 ### 2. Vue-Router 使用
 
-新增了一个 `useRoute` 方法 获取到路由
+新增了一个 `useRouter` 方法 获取到路由
+
+新增了一个`useRoute`方法 获取到当前路由
 
 `内容略过`
 
@@ -768,5 +770,7 @@ import 'normalize.css'
 
 
 
+#### 2. 新语法
 
+`res?.data?.id === 0`
 

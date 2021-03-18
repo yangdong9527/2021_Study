@@ -21,12 +21,10 @@ export const post = (url, data = {}) => {
 
 export const get = (url, params = {}) => {
   return new Promise((resolve, reject) => {
-    instance.get(url, params)
-      .then(res => {
-        resolve(res.data)
-      })
-      .catch(err => {
-        reject(err)
-      })
+    instance.get(url, params).then((response) => {
+      resolve(response.data)
+    }, err => {
+      reject(err)
+    })
   })
 }

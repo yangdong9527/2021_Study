@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="drawing" width="500" height="500"></canvas>
+</body>
+<script>
+  let drawing = document.getElementById('drawing')
+  if(drawing.getContext) {
+    let context = drawing.getContext('2d')
+    context.beginPath()
+
+    context.arc(100, 100, 99, 0, 2 * Math.PI, false)
+    context.moveTo(194, 100);
+    context.arc(100, 100, 94, 0, 2 * Math.PI, false);
+    context.moveTo(100, 100);
+    context.lineTo(100, 15); 
+    context.moveTo(100, 100);
+    context.lineTo(35, 100); 
+    context.stroke()
+  }
+</script>
+</html>

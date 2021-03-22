@@ -5,23 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,1);
+  }
+</style>
 <body>
-  <canvas id="drawing" width="500" height="500"></canvas>
+  <canvas id="canvas"></canvas>
 </body>
 <script>
-  let drawing = document.getElementById('drawing')
-  if(drawing.getContext) {
-    let context = drawing.getContext('2d')
-    context.beginPath()
+  const canvas = document.getElementById('canvas')
+  var W = window.innerWidth;
+  var H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = '#fff'
 
-    context.arc(100, 100, 99, 0, 2 * Math.PI, false)
-    context.moveTo(194, 100);
-    context.arc(100, 100, 94, 0, 2 * Math.PI, false);
-    context.moveTo(100, 100);
-    context.lineTo(100, 15); 
-    context.moveTo(100, 100);
-    context.lineTo(35, 100); 
-    context.stroke()
+  let snowList = []
+  //初始数据 生成随机雪花
+  for(let i = 0 ; i < 100; i++) {
+    snowList.push({
+      x: parseInt(Math.random() * W),
+      y: parseInt(Math.random() * H),
+      r: parseInt(Math.random() * 5 + 2),
+      d: Math.random() + 1 // 下降速度
+    })
   }
+  // 绘制雪花
+  function snowDraw() {
+    // 清除之前绘制雪花
+    ctx.clearRect(0,0,W,H)
+    for(let i = 0; i < snowList.length; i++) {
+      const item = snowList[i]
+      ctx.moveTo(item.x, item.y)
+      ctx.arc(item.x, item.y, item.r, 0, Math.PI * 2, true)
+    }
+    ctx.fill()
+    // 往下移动
+    snowMove()
+  }
+  var angle = 0
+  function snowMove() {
+    angle += 0.01
+    for(let i = 0; i < snowList.length; i++) {
+      let item = snowList[i]
+      item.x += Math.sin(angle) * 2
+      item.y += Math.pow(item.d, 2) + 1
+      if(item.y > H) {
+        snowList[i] = {x: Math.random() * W, y: 0, r: item.r, d: item.d}
+      }
+    }
+  }
+  setInterval(snowDraw, 1000)
 </script>
 </html>

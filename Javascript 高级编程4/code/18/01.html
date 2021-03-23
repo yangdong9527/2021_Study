@@ -30,7 +30,7 @@
 
   let snowList = []
   //初始数据 生成随机雪花
-  for(let i = 0 ; i < 100; i++) {
+  for(let i = 0 ; i < 50; i++) {
     snowList.push({
       x: parseInt(Math.random() * W),
       y: parseInt(Math.random() * H),
@@ -38,31 +38,93 @@
       d: Math.random() + 1 // 下降速度
     })
   }
+  
+  let lastClientX = null
+  let moveNum = 0
+  // function handleMouseMove(e) {
+  //   if(lastClientX !== null) {
+  //     moveNum = (e.clientX - lastClientX) / 4
+  //     lastClientX = e.clientX
+  //   } else {
+  //     lastClientX = e.clientX
+  //   }
+  // }
+  // canvas.addEventListener('mouseenter', () => {
+  //   canvas.addEventListener('mousemove', handleMouseMove)
+  // })
+  // canvas.addEventListener('mouseleave', e => {
+  //   moveNum = 0
+  //   lastClientX = null
+  //   canvas.removeEventListener('mousemove', handleMouseMove)
+  // })
+
+  
+  const image = new Image()
+  image.src = 'http://upload.test.semotech.cn/0323.jpg'
+  
+  
+  
+  
   // 绘制雪花
   function snowDraw() {
     // 清除之前绘制雪花
     ctx.clearRect(0,0,W,H)
+    ctx.beginPath()
     for(let i = 0; i < snowList.length; i++) {
       const item = snowList[i]
       ctx.moveTo(item.x, item.y)
-      ctx.arc(item.x, item.y, item.r, 0, Math.PI * 2, true)
+      // ctx.arc(item.x, item.y, item.r, 0, Math.PI * 2, true)
+      ctx.drawImage(image, item.x, item.y, 20, 20)
     }
-    ctx.fill()
+    // ctx.fill()
     // 往下移动
     snowMove()
+    
+    requestAnimationFrame(snowDraw)
   }
   var angle = 0
   function snowMove() {
     angle += 0.01
     for(let i = 0; i < snowList.length; i++) {
       let item = snowList[i]
-      item.x += Math.sin(angle) * 2
-      item.y += Math.pow(item.d, 2) + 1
-      if(item.y > H) {
-        snowList[i] = {x: Math.random() * W, y: 0, r: item.r, d: item.d}
+      item.x += (0.6 + moveNum)
+      item.y += item.d * 1.2
+      if(item.y > H || item.w > W || item.w < 0) {
+        snowList[i] = {x: Math.random() * W, y: -20, r: item.r, d: item.d}
       }
     }
   }
-  setInterval(snowDraw, 1000)
+  // setInterval(snowDraw, 25)
+
+  requestAnimationFrame(snowDraw)
+  
+
+  // 工具函数
+   // 规定时间内 不再触发 执行一次函数  防抖
+  function debounce(fn,delay){
+    let timer = null //借助闭包
+    return function() {
+      if(timer){
+          clearTimeout(timer) 
+      }
+      timer = setTimeout(fn,delay) // 简化写法
+    }
+  }
+  // 持续触发的事件 每间隔几秒触发一次  节流
+  function throttle(fn,delay){
+    let valid = true
+    return function() {
+       if(!valid){
+           //休息时间 暂不接客
+           return false 
+       }
+       // 工作时间，执行函数并且在间隔期内把状态位设为无效
+        valid = false
+        setTimeout(() => {
+            fn()
+            valid = true;
+        }, delay)
+    }
+  }
 </script>
 </html>

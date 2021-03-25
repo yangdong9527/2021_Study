@@ -20,6 +20,8 @@
   <canvas id="canvas"></canvas>
 </body>
 <script>
+  const randomNum = (min, max) => (Math.random() * (max - min)) + min
+
   const canvas = document.getElementById('canvas')
   var W = window.innerWidth;
   var H = window.innerHeight;
@@ -41,26 +43,11 @@
   
   let lastClientX = null
   let moveNum = 0
-  // function handleMouseMove(e) {
-  //   if(lastClientX !== null) {
-  //     moveNum = (e.clientX - lastClientX) / 4
-  //     lastClientX = e.clientX
-  //   } else {
-  //     lastClientX = e.clientX
-  //   }
-  // }
-  // canvas.addEventListener('mouseenter', () => {
-  //   canvas.addEventListener('mousemove', handleMouseMove)
-  // })
-  // canvas.addEventListener('mouseleave', e => {
-  //   moveNum = 0
-  //   lastClientX = null
-  //   canvas.removeEventListener('mousemove', handleMouseMove)
-  // })
+
 
   
   const image = new Image()
-  image.src = 'http://upload.test.semotech.cn/0323.jpg'
+  image.src = 'http://upload.test.semotech.cn/0325_dfadfa.png'
   
   
   
@@ -76,7 +63,6 @@
       // ctx.arc(item.x, item.y, item.r, 0, Math.PI * 2, true)
       ctx.drawImage(image, item.x, item.y, 20, 20)
     }
-    // ctx.fill()
     // 往下移动
     snowMove()
     
@@ -96,7 +82,7 @@
   }
   // setInterval(snowDraw, 25)
 
-  requestAnimationFrame(snowDraw)
+  snowDraw()
   
 
   // 工具函数

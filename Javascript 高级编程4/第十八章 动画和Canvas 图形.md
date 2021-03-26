@@ -313,6 +313,30 @@ context.fillRect(10, 10, 150,150)
 + `scale()`缩放
 + transform()
 
+> 矩阵 六个参数 a,b,c,d,e,f
+>
+> 缩放与这个 a , d 相关 分别代表着 x , y 方向上的缩放
+>
+> transform(2, 0, 0, 2, 0, 0)  放大两倍
+>
+> 
+>
+> 位移只和  e , f 相关  控制着  x , y 方向上的位移
+>
+> transform(1,0,0,1, 10, 10)
+>
+> 
+>
+> 旋转角度 需要使用 cos 和 sin ,  牢记方式 CS-SC 初三-上床
+>
+> transform(cos角度, sin角度, -sin角度, cos角度, e, f)
+>
+> 
+>
+> 拉伸 用到了tan , 只和  b, c 两个参数有关
+>
+> transform(1, ytan角度, xtan角度, 1, 0, 0)
+
 此外上下文中提供了 `save()`方法, 保存当前环境下的配置, 然后可以通过 `restore()`回到上一次配置
 
 #### 7. 绘制图像

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="draw" width="400" height="200"></canvas>
+</body>
+<script>
+  const c = document.getElementById('draw')
+  const ctx = c.getContext('2d')
+
+  function Bell(x = 10, y = 10) {
+    this.x = x
+    this.y = y
+    this.vx = 5
+    this.vy = 2
+    this.radius = 10
+    this.color = 'blue'
+    this.draw = function(ctx) {
+      ctx.beginPath()
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+      ctx.closePath()
+      ctx.fillStyle = this.color
+      ctx.fill()
+    }
+    this.update = function() {
+      this.x += this.vx
+      this.y += this.vy
+      this.vy *= 0.99
+      this.vy += .45
+      if(this.x + this.vx > c.width || this.x + this.vx < 0) {
+        this.vx = -this.vx
+      }
+      if(this.y + this.vy > c.height || this.y + this.vy < 0) {
+        this.vy = -this.vy
+      }
+    }
+  }
+
+  let bellList = []
+  function draw() {
+    ctx.clearRect(0,0,c.width, c.height)
+    ctx.strokeRect(0,0,c.width,c.height)
+    for(let i = 0; i < bellList.length; i++) {
+      let bell = bellList[i]
+      bell.draw(ctx)
+      bell.update()
+    }
+    requestAnimationFrame(draw)
+  }
+
+  draw()
+  // 绑定事件
+  c.addEventListener('mousedown', e => {
+    tt = setTimeout(() => {
+      let bell = new Bell(e.offsetX, e.offsetY)
+      bellList.push(bell)
+    }, 200)
+  })
+  c.addEventListener('mouseUp', e => {
+    clearTimeout(tt)
+  })
+
+</script>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "02code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node ./src/crowller.ts",
+    "build": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/superagent": "^4.1.11",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.6",
+    "superagent": "^6.1.0"
+  }
+}

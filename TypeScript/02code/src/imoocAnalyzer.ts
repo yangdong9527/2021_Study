@@ -16,6 +16,14 @@ interface Content {
 }
 
 export default class ImoocAnalyzer implements Analyzer {
+  private static instance: ImoocAnalyzer;
+
+  static getInstance() {
+    if(!ImoocAnalyzer.instance) {
+      ImoocAnalyzer.instance = new ImoocAnalyzer()
+    }
+    return ImoocAnalyzer.instance
+  }
   private getCourseInfo(html: string) {
     const $ = cheerio.load(html)
     const coruseItems = $('.new-course:first').find('.show').find('.item')

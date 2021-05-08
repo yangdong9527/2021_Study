@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import superagent from 'superagent'
-import cheerio from 'cheerio'
 import ImoocAnalyzer from './imoocAnalyzer'
 
 interface Course {
@@ -46,5 +45,5 @@ class Crowller {
 }
 
 const url = 'https://www.imooc.com'
-const analyzer = new ImoocAnalyzer()
+const analyzer = ImoocAnalyzer.getInstance()
 const crowller = new Crowller(analyzer, url)

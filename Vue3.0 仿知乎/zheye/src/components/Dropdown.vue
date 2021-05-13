@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown" ref="dropdownRef">
-    <a href="#" class="btn btn-outline-light my-2 dropdown-toggle" @click="toggleOpen">{{title}}</a>
+    <a href="#" class="btn btn-outline-light my-2 dropdown-toggle" @click="toggleOpen">你好啊,{{title}}</a>
     <ul class="dropdown-menu" :style="{display: 'block'}" v-if="isOpen">
       <slot></slot>
     </ul>

@@ -1,13 +1,13 @@
 import { ref, onMounted, onUnmounted, Ref } from 'vue'
 
-function useClickOutside (element: Ref<HTMLElement | null>) : Ref<boolean> {
-  const isClickOutside = ref(false)
-  const handler = (e: MouseEvent) => {
+function useClickOutside (element: Ref<HTMLElement | null>): Ref<boolean> {
+  const isClickOuthSide = ref(false)
+  const handler: (e: MouseEvent) => void = (e) => {
     if (element.value) {
       if (element.value.contains(e.target as HTMLElement)) {
-        isClickOutside.value = false
+        isClickOuthSide.value = false
       } else {
-        isClickOutside.value = true
+        isClickOuthSide.value = true
       }
     }
   }
@@ -17,6 +17,6 @@ function useClickOutside (element: Ref<HTMLElement | null>) : Ref<boolean> {
   onUnmounted(() => {
     document.removeEventListener('click', handler)
   })
-  return isClickOutside
+  return isClickOuthSide
 }
 export default useClickOutside

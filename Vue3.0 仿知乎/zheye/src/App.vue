@@ -2,7 +2,7 @@
   <div class="container">
     <global-header :user="user" />
     <column-list :list="list" ></column-list>
-    <form action="">
+    <validate-form @formSubmit="formSubmit">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">邮箱地址</label>
         <validate-input v-model="email" type="text" placeholder="请输入邮箱地址" :rules="emailRules" />
@@ -11,7 +11,10 @@
         <label for="exampleInputPassword" class="form-label">密码</label>
         <validate-input v-model="password" type="password" placeholder="请输入密码" :rules="passRules" />
       </div>
-    </form>
+      <template #submit>
+        <button class="btn btn-primary">点我啊</button>
+      </template>
+    </validate-form>
   </div>
 </template>
 
@@ -20,6 +23,7 @@ import { defineComponent, ref } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ColumnList, { columnProp } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
+import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 
 const testData: columnProp[] = [
@@ -57,6 +61,7 @@ export default defineComponent({
   components: {
     ColumnList,
     GlobalHeader,
+    ValidateForm,
     ValidateInput
   },
   setup () {
@@ -69,13 +74,22 @@ export default defineComponent({
     const passRules: RulesProp = [
       { type: 'required', message: '请输入密码' }
     ]
+    const formSubmit = (valid: boolean) => {
+      // 点击提交按钮
+      if (valid) {
+        console.log('验证成功')
+      } else {
+        console.log('验证失败')
+      }
+    }
     return {
       list: testData,
       user: testUser,
       emailRules,
       email,
       password,
-      passRules
+      passRules,
+      formSubmit
     }
   }
 })

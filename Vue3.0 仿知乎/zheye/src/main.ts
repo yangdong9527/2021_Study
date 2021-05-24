@@ -1,27 +1,15 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import router from './router'
+import store from './store'
+import axios from 'axios'
 import App from './App.vue'
-import Home from './views/Home.vue'
-
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-const routerHistory = createWebHistory()
-const router = createRouter({
-  history: routerHistory,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('./views/Login.vue')
-    }
-  ]
+axios.get('http://api.vikingship.xyz/api/columns?currentPage=1&pageSize=5').then(res => {
+  console.log(res)
 })
 
 const app = createApp(App)
 app.use(router)
+app.use(store)
 app.mount('#app')

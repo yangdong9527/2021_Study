@@ -7,6 +7,10 @@
         <button class="btn btn-primary">点击提交</button>
       </template>
     </validate-form>
+    <my-validate-form ref="formRef">
+      <my-validate-input v-model="testData" :rules="myRules" class="abc" placeholder="请输入名字" />
+    </my-validate-form>
+    <button class="btn btn-primary" @click="testClick">点我</button>
   </div>
 </template>
 
@@ -14,12 +18,21 @@
 import { defineComponent, ref } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
+import MyValidateInput from '@/components/MyValidateInput.vue'
+import MyValidateForm from '@/components/MyValidateForm.vue'
+
+// 如何调用子组件中的方法
+interface formRefProp extends HTMLElement {
+  submitForm: () => boolean
+}
 
 export default defineComponent({
   name: 'Login',
   components: {
     ValidateForm,
-    ValidateInput
+    ValidateInput,
+    MyValidateInput,
+    MyValidateForm
   },
   setup () {
     const formSubmit: (res: boolean) => void = (result) => {
@@ -29,6 +42,7 @@ export default defineComponent({
     }
     const email = ref(null)
     const password = ref(null)
+    const testData = ref(null)
     const emailRules: RulesProp = [
       { type: 'required', message: '请输入电子邮箱地址' },
       { type: 'email', message: '请输入正确的电子邮箱地址' }
@@ -36,12 +50,26 @@ export default defineComponent({
     const passRules: RulesProp = [
       { type: 'required', message: '请输入密码' }
     ]
+    const myRules: RulesProp = [
+      { type: 'required', message: '该项不能为空' },
+      { type: 'email', message: '请输入合法邮箱' }
+    ]
+    const formRef = ref<formRefProp | null>(null)
+    const testClick = () => {
+      if (formRef.value) {
+        formRef.value.submitForm()
+      }
+    }
     return {
       email,
       password,
       formSubmit,
       emailRules,
-      passRules
+      passRules,
+      testData,
+      myRules,
+      testClick,
+      formRef
     }
   }
 })
